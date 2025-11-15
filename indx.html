@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тз</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js">
+    </script>
+</head>
+
+<body>
+
+    <div class="chart-container">
+        <div id="dataTable">
+            <div class="head">
+                <div class="th">Показатель</div>
+                <div class="th hold">Текущий день </div>
+                <div class="th">Вчера</div>
+                <div class="th">Этот день недели</div>
+            </div>
+            <div class="tr" name-labels='["Текущий день", "Вчера", "Этот день недели"]'
+                number-labes='[500521, 480521, 4805121]'>
+                <div class="td">Выручка, руб</div>
+                <div class="td hold">500521</div>
+                <div class="td buy"><span>480521</span><span class="share">4%</span></div>
+                <div class="td sell">4805121</div>
+            </div>
+            <canvas id="myDynamicLineChart"></canvas>
+            <div class="tr" name-labels='["Текущий день", "Вчера", "Этот день недели"]'
+                number-labes='[300000, 300000, 300000]'>
+                <div class="td">Наличные, руб</div>
+                <div class="td hold">300000</div>
+                <div class="td"><span>300000</span><span class="share">0%</span></div>
+                <div class="td">300000</div>
+            </div>
+            <div class="tr" name-labels='["Текущий день", "Вчера", "Этот день недели"]'
+                number-labes='[100000, 100000, 100000]'>
+                <div class="td">Безналичный расчет, руб</div>
+                <div class="td hold">100000</div>
+                <div class="td"><span>100000</span><span class="share">0%</span></div>
+                <div class="td">100000</div>
+            </div>
+            <div class="tr" name-labels='["Текущий день", "Вчера", "Этот день недели"]'
+                number-labes='[100521, 100521, 100521]'>
+                <div class="td">Кредитные карты, руб</div>
+                <div class="td hold">100521</div>
+                <div class="td"><span>100521</span><span class="share">0%</span></div>
+                <div class="td">100521</div>
+            </div>
+            <div class="tr" name-labels='["Текущий день", "Вчера", "Этот день недели"]' number-labes='[1300, 900, 900]'>
+                <div class="td">Средний чек, руб</div>
+                <div class="td hold">1300</div>
+                <div class="td buy"><span>900</span><span class="share">44%</span></div>
+                <div class="td buy">900</div>
+            </div>
+            <div class="tr" name-labels='["Текущий день", "Вчера", "Этот день недели"]' number-labes='[1200, 800, 800]'>
+                <div class="td">Средний гость, руб</div>
+                <div class="td hold">1200</div>
+                <div class="td buy"><span>800</span><span class="share">50%</span></div>
+                <div class="td buy">800</div>
+            </div>
+            <div class="tr" name-labels='["Текущий день", "Вчера", "Этот день недели"]'
+                number-labes='[1000, 1100, 900]'>
+                <div class="td">Удаления из чека (после оплаты), руб</div>
+                <div class="td hold">1000</div>
+                <div class="td sell"><span>1100</span><span class="share">-9%</span></div>
+                <div class="td buy">900</div>
+            </div>
+            <div class="tr" name-labels='["Текущий день", "Вчера", "Этот день недели"]'
+                number-labes='[1300, 1300, 900]'>
+                <div class="td">Удаления из чека (до оплаты), руб</div>
+                <div class="td hold">1300</div>
+                <div class="td"><span>1300</span><span class="share">0%</span></div>
+                <div class="td buy">900</div>
+            </div>
+            <div class="tr" name-labels='["Текущий день", "Вчера", "Этот день недели"]' number-labes='[34, 36, 34]'>
+                <div class="td">Количество чеков</div>
+                <div class="td hold">34</div>
+                <div class="td sell"><span>36</span><span class="share">-6%</span></div>
+                <div class="td">34</div>
+            </div>
+            <div class="tr" name-labels='["Текущий день", "Вчера", "Этот день недели"]' number-labes='[34, 36, 32]'>
+                <div class="td">Количество гостей</div>
+                <div class="td hold">34</div>
+                <div class="td sell"><span>36</span><span class="share">-6%</span></div>
+                <div class="td buy">32</div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstRow = document.querySelector('#dataTable .tr[number-labes]');
+            if (firstRow) {
+                const initialLabels = JSON.parse(firstRow.getAttribute('name-labels'));
+                const initialnumberset = JSON.parse(firstRow.getAttribute('number-labes'));
+                updateChart(initialLabels, initialnumberset);
+            } else {
+                console.error("Нет данных");
+            }
+
+            const table = document.querySelector('#dataTable');
+            table.addEventListener('click', (event) => {
+
+                const clickedRow = event.target.closest('.tr');
+                if (clickedRow) {
+                    const labels = JSON.parse(clickedRow.getAttribute('name-labels'));
+                    const numberset = JSON.parse(clickedRow.getAttribute('number-labes'));
+
+                    const existingCanvas = document.getElementById('myDynamicLineChart');
+                    if (existingCanvas) {
+                        existingCanvas.remove();
+                        console.log('Существующий <canvas id="myDynamicLineChart"></canvas> удален.');
+                    }
+
+                    const canvasElement = document.createElement('canvas');
+                    canvasElement.id = 'myDynamicLineChart';
+
+                    if (clickedRow.nextSibling) {
+                        clickedRow.parentNode.insertBefore(canvasElement, clickedRow.nextSibling);
+                    } else {
+                        clickedRow.parentNode.appendChild(canvasElement);
+                    }
+
+                    updateChart(labels, numberset);
+                }
+            });
+
+            function updateChart(labels, data) {
+                const ctx = document.getElementById('myDynamicLineChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            borderColor: 'green',
+                            borderWidth: 2,
+                            fill: false,
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+                console.log('Диаграмма обновлена.');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

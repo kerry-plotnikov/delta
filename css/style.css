@@ -1,0 +1,52 @@
+canvas {
+  max-width: 100%;
+  width: 100%;
+}
+
+.chart-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+#dataTable {
+  display: grid;
+  gap: 8px;
+}
+#dataTable .th {
+  background-color: #f5f5f5;
+  padding: 12px;
+  text-align: center;
+  font-weight: normal;
+}
+#dataTable .tr, #dataTable .head {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1fr 1.5fr;
+  gap: 8px;
+}
+#dataTable .tr > *, #dataTable .head > * {
+  padding: 12px;
+  background-color: #f5f5f5;
+}
+#dataTable .td {
+  display: flex;
+  gap: 20px;
+  justify-content: flex-end;
+}
+#dataTable .td:first-child {
+  justify-content: flex-start;
+}
+#dataTable .hold {
+  background-color: #eff8ff;
+}
+#dataTable .sell {
+  background-color: #fee6e6;
+}
+#dataTable .sell .share {
+  color: red;
+}
+#dataTable .buy {
+  background-color: #ecf7e7;
+}
+#dataTable .buy .share {
+  color: green;
+}

@@ -1,0 +1,39 @@
+canvas
+    max-width: 100%
+    width: 100%
+.chart-container
+    max-width: 1000px
+    margin: 0 auto
+#dataTable
+    display: grid
+    gap: 8px
+    .th
+        background-color: #f5f5f5
+        padding: 12px
+        text-align: center
+        font-weight: normal
+    .tr,.head
+        display: grid
+        grid-template-columns: 3fr 1fr 1fr 1.5fr
+        gap: 8px
+        &>*
+            padding: 12px
+            background-color: #f5f5f5
+
+    .td
+        display: flex
+        gap: 20px
+        justify-content: flex-end
+        &:first-child
+            justify-content: flex-start
+
+    .hold
+        background-color: #eff8ff
+    .sell
+        background-color: #fee6e6
+        .share
+            color: red
+    .buy
+        background-color: #ecf7e7
+        .share
+            color: green
